@@ -1,0 +1,22 @@
+{
+  "name": "Tip Split - Fair Tip Distribution Calculator",
+  "short_name": "Tip Split",
+  "description": "Fair distribution of tips based on hours worked. Perfect for restaurants, bars, and service staff.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' fill='none'%3E%3Crect width='192' height='192' rx='48' fill='%237c3aed'/%3E%3Cpath d='M96 48c-26.5 0-48 21.5-48 48s21.5 48 48 48 48-21.5 48-48-21.5-48-48-48zm5.65 64.36V120h-10.68v-7.72c-6.84-1.44-12.64-5.84-13.08-13.6h7.84c.4 4.2 3.28 7.48 10.6 7.48 7.84 0 9.6-3.92 9.6-6.36 0-3.32-1.76-6.44-10.68-8.56-9.92-2.4-16.72-6.48-16.72-14.68 0-6.88 5.56-11.36 12.44-12.84V56h10.68v7.8c7.44 1.8 11.16 7.44 11.4 13.56h-7.92c-.2-4.44-2.56-7.48-8.88-7.48-6 0-9.6 2.72-9.6 6.56 0 3.36 2.6 5.56 10.68 7.64s16.72 5.56 16.72 15.64c-.04 7.32-5.52 11.32-12.48 12.64z' fill='%23ffffff'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'%3E%3Crect width='512' height='512' rx='128' fill='%237c3aed'/%3E%3Cpath d='M256 128c-70.7 0-128 57.3-128 128s57.3 128 128 128 128-57.3 128-128-57.3-128-128-128zm15.1 171.6V320h-28.5v-20.6c-18.2-3.8-33.7-15.6-34.9-36.3h20.9c1.1 11.2 8.7 20 28.3 20 20.9 0 25.6-10.4 25.6-17 0-8.9-4.7-17.2-28.5-22.8-26.5-6.4-44.6-17.3-44.6-39.2 0-18.4 14.8-30.3 33.2-34.3V152h28.5v20.8c19.9 4.8 29.8 19.9 30.4 36.2h-21.1c-.5-11.8-6.8-20-23.7-20-16 0-25.6 7.3-25.6 17.5 0 9 6.9 14.8 28.5 20.4s44.6 14.8 44.6 41.7c-.1 19.5-14.7 30.2-33.3 33.7z' fill='%23ffffff'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

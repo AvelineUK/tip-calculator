@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="description" content="Fair tip distribution calculator based on hours worked. Perfect for restaurants, bars, and service staff.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tip Split">
+  <title>Tip Split - Fair Tip Distribution Calculator</title>
+  <link rel="manifest" href="manifest.json">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overscroll-behavior: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+
+    // Lucide icons as inline SVG components
+    const Plus = ({ className }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+      </svg>
+    );
+
+    const Trash2 = ({ className }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      </svg>
+    );
+
+    const DollarSign = ({ className }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    );
+
+    function TipCalculator() {
+      const [totalTips, setTotalTips] = useState('');
+      const [staff, setStaff] = useState([
+        { id: 1, name: '', hours: '' }
+      ]);
+
+      const addStaff = () => {
+        setStaff([...staff, { id: Date.now(), name: '', hours: '' }]);
+      };
+
+      const removeStaff = (id) => {
+        if (staff.length > 1) {
+          setStaff(staff.filter(s => s.id !== id));
+        }
+      };
+
+      const updateStaff = (id, field, value) => {
+        setStaff(staff.map(s => s.id === id ? { ...s, [field]: value } : s));
+      };
+
+      const calculateDistribution = () => {
+        const tips = parseFloat(totalTips) || 0;
+        const totalHours = staff.reduce((sum, s) => sum + (parseFloat(s.hours) || 0), 0);
+        
+        if (totalHours === 0) return [];
+        
+        const hourlyRate = tips / totalHours;
+        
+        return staff.map(s => {
+          const hours = parseFloat(s.hours) || 0;
+          const amount = hours * hourlyRate;
+          return {
+            ...s,
+            amount: amount.toFixed(2),
+            percentage: totalHours > 0 ? ((hours / totalHours) * 100).toFixed(1) : 0
+          };
+        });
+      };
+
+      const distribution = calculateDistribution();
+      const hasValidData = parseFloat(totalTips) > 0 && staff.some(s => parseFloat(s.hours) > 0);
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-4 sm:p-8">
+          <div className="max-w-2xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 backdrop-blur-sm rounded-full mb-4">
+                <DollarSign className="w-10 h-10 text-white" />
+              </div>
+              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3">Tip Split</h1>
+              <p className="text-purple-100 text-lg">Fair distribution based on hours worked</p>
+            </div>
+
+            {/* Main Card */}
+            <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 mb-6">
+              {/* Total Tips Input */}
+              <div className="mb-8">
+                <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                  Total Tips Amount (£)
+                </label>
+                <input
+                  type="number"
+                  value={totalTips}
+                  onChange={(e) => setTotalTips(e.target.value)}
+                  placeholder="0.00"
+                  step="0.01"
+                  inputMode="decimal"
+                  className="w-full px-6 py-4 text-3xl font-bold border-3 border-gray-200 rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 focus:outline-none transition-all"
+                />
+              </div>
+
+              {/* Staff List */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">
+                    Staff Members
+                  </label>
+                  <button
+                    onClick={addStaff}
+                    className="flex items-center gap-2 px-5 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 active:scale-95 transition-all text-sm font-bold shadow-lg"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Staff
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {staff.map((person, index) => (
+                    <div key={person.id} className="flex gap-3 items-center p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl shadow-sm">
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          value={person.name}
+                          onChange={(e) => updateStaff(person.id, 'name', e.target.value)}
+                          placeholder={`Staff member ${index + 1}`}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none transition-all text-base"
+                        />
+                      </div>
+                      <div className="w-28">
+                        <input
+                          type="number"
+                          value={person.hours}
+                          onChange={(e) => updateStaff(person.id, 'hours', e.target.value)}
+                          placeholder="Hours"
+                          step="0.5"
+                          min="0"
+                          inputMode="decimal"
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none transition-all text-center font-semibold"
+                        />
+                      </div>
+                      <button
+                        onClick={() => removeStaff(person.id)}
+                        disabled={staff.length === 1}
+                        className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Results */}
+            {hasValidData && (
+              <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Distribution Results</h2>
+                
+                <div className="space-y-3">
+                  {distribution.map((person) => {
+                    const hours = parseFloat(person.hours) || 0;
+                    if (hours === 0) return null;
+                    
+                    return (
+                      <div key={person.id} className="flex items-center justify-between p-5 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-2xl shadow-sm">
+                        <div className="flex-1">
+                          <div className="font-bold text-gray-900 text-lg">
+                            {person.name || `Staff member ${staff.findIndex(s => s.id === person.id) + 1}`}
+                          </div>
+                          <div className="text-sm text-gray-600 font-medium mt-1">
+                            {person.hours} hours • {person.percentage}% of total
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold text-purple-600">
+                            £{person.amount}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-8 pt-6 border-t-3 border-gray-200">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xl font-bold text-gray-700">Total Distributed:</span>
+                    <span className="text-4xl font-bold text-gray-900">£{totalTips}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!hasValidData && (
+              <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
+                <div className="text-gray-300 mb-4">
+                  <DollarSign className="w-20 h-20 mx-auto" />
+                </div>
+                <p className="text-gray-500 text-lg">
+                  Enter total tips and staff hours to see the distribution
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<TipCalculator />);
+  </script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('Service Worker registered'))
+          .catch(err => console.log('Service Worker registration failed'));
+      });
+    }
+  </script>
+</body>
+</html>
