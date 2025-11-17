@@ -3,21 +3,346 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <meta name="theme-color" content="#7c3aed">
+  <meta name="theme-color" content="#000000">
   <meta name="description" content="Fair tip distribution calculator based on hours worked. Perfect for restaurants, bars, and service staff.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Tip Split">
-  <title>Tip Split - Fair Tip Distribution Calculator</title>
+  <meta name="apple-mobile-web-app-title" content="Fair Tips">
+  <title>Fair Tips - Tip Distribution Calculator</title>
   <link rel="manifest" href="manifest.json">
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', Courier, monospace, sans-serif;
+      background: linear-gradient(135deg, #c0c5ce 0%, #8b95a5 50%, #c0c5ce 100%);
+      color: #2a2d35;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
       overscroll-behavior: none;
+      min-height: 100vh;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-top: 24px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      color: #f5f7fa;
+    }
+
+    .header p {
+      font-size: 15px;
+      color: #f5f7fa;
+      font-weight: 400;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #e8ecf1, #d1d6dd);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 32px;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-tips {
+      width: 100%;
+      padding: 16px;
+      font-size: 32px;
+      font-weight: 700;
+      border: 2px solid #b8c1cc;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      background: linear-gradient(145deg, #f5f7fa, #e8ecf1);
+      color: #2a2d35;
+    }
+
+    .input-tips:focus {
+      border-color: #718096;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      background: linear-gradient(145deg, #a0aec0, #718096);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn:hover {
+      background: linear-gradient(145deg, #718096, #4a5568);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .staff-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .staff-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .staff-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #b8c1cc;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      background: linear-gradient(145deg, #f5f7fa, #e8ecf1);
+      color: #2a2d35;
+    }
+
+    .staff-input:focus {
+      border-color: #718096;
+    }
+
+    .hours-input {
+      width: 100px;
+      padding: 12px 16px;
+      border: 1px solid #b8c1cc;
+      border-radius: 8px;
+      font-size: 15px;
+      text-align: center;
+      font-weight: 600;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      background: linear-gradient(145deg, #f5f7fa, #e8ecf1);
+      color: #2a2d35;
+    }
+
+    .hours-input:focus {
+      border-color: #718096;
+    }
+
+    .btn-delete {
+      background: linear-gradient(145deg, #e8ecf1, #d1d6dd);
+      color: #718096;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .btn-delete:hover:not(:disabled) {
+      background: linear-gradient(145deg, #fecaca, #dc2626);
+      color: #ffffff;
+    }
+
+    .btn-delete:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    .btn-delete:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .results-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.3px;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(184, 193, 204, 0.3);
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2a2d35;
+      margin-bottom: 4px;
+    }
+
+    .result-details {
+      font-size: 13px;
+      color: #718096;
+    }
+
+    .result-amount {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4a5568, #718096);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .total-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 2px solid rgba(184, 193, 204, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #718096;
+    }
+
+    .total-amount {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4a5568, #718096, #4a5568);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      opacity: 0.3;
+    }
+
+    .empty-text {
+      font-size: 15px;
+      color: #718096;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 13px;
+      color: #e8ecf1;
+    }
+
+    .footer a {
+      color: #f5f7fa;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 16px;
+      }
+
+      .header {
+        margin-bottom: 32px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .hours-input {
+        width: 85px;
+      }
+
+      .result-amount {
+        font-size: 24px;
+      }
+
+      .total-amount {
+        font-size: 32px;
+      }
     }
   </style>
 </head>
@@ -27,22 +352,21 @@
   <script type="text/babel" data-type="module">
     const { useState } = React;
 
-    // Lucide icons as inline SVG components
     const Plus = ({ className }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+      <svg className={className} viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" />
       </svg>
     );
 
     const Trash2 = ({ className }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      <svg className={className} viewBox="0 0 24 24">
+        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
       </svg>
     );
 
     const DollarSign = ({ className }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <svg className={className} viewBox="0 0 24 24">
+        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
       </svg>
     );
 
@@ -89,137 +413,107 @@
       const hasValidData = parseFloat(totalTips) > 0 && staff.some(s => parseFloat(s.hours) > 0);
 
       return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-4 sm:p-8">
-          <div className="max-w-2xl mx-auto">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 backdrop-blur-sm rounded-full mb-4">
-                <DollarSign className="w-10 h-10 text-white" />
-              </div>
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3">Tip Split</h1>
-              <p className="text-purple-100 text-lg">Fair distribution based on hours worked</p>
+        <div className="app">
+          <div className="header">
+            <h1>Fair Tips</h1>
+            <p>Fair distribution based on hours worked</p>
+          </div>
+
+          <div className="card">
+            <div className="input-group">
+              <label className="label">Total Tips Amount (£)</label>
+              <input
+                type="number"
+                value={totalTips}
+                onChange={(e) => setTotalTips(e.target.value)}
+                placeholder="0.00"
+                step="0.01"
+                inputMode="decimal"
+                className="input-tips"
+              />
             </div>
 
-            {/* Main Card */}
-            <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 mb-6">
-              {/* Total Tips Input */}
-              <div className="mb-8">
-                <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
-                  Total Tips Amount (£)
-                </label>
-                <input
-                  type="number"
-                  value={totalTips}
-                  onChange={(e) => setTotalTips(e.target.value)}
-                  placeholder="0.00"
-                  step="0.01"
-                  inputMode="decimal"
-                  className="w-full px-6 py-4 text-3xl font-bold border-3 border-gray-200 rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 focus:outline-none transition-all"
-                />
-              </div>
+            <div className="section-header">
+              <label className="label">Staff Members</label>
+              <button onClick={addStaff} className="btn">
+                <Plus className="icon" />
+                Add Staff
+              </button>
+            </div>
 
-              {/* Staff List */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">
-                    Staff Members
-                  </label>
+            <div className="staff-list">
+              {staff.map((person, index) => (
+                <div key={person.id} className="staff-item">
+                  <input
+                    type="text"
+                    value={person.name}
+                    onChange={(e) => updateStaff(person.id, 'name', e.target.value)}
+                    placeholder={`Staff member ${index + 1}`}
+                    className="staff-input"
+                  />
+                  <input
+                    type="number"
+                    value={person.hours}
+                    onChange={(e) => updateStaff(person.id, 'hours', e.target.value)}
+                    placeholder="Hours"
+                    step="0.5"
+                    min="0"
+                    inputMode="decimal"
+                    className="hours-input"
+                  />
                   <button
-                    onClick={addStaff}
-                    className="flex items-center gap-2 px-5 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 active:scale-95 transition-all text-sm font-bold shadow-lg"
+                    onClick={() => removeStaff(person.id)}
+                    disabled={staff.length === 1}
+                    className="btn-delete"
                   >
-                    <Plus className="w-4 h-4" />
-                    Add Staff
+                    <Trash2 className="icon" />
                   </button>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                <div className="space-y-3">
-                  {staff.map((person, index) => (
-                    <div key={person.id} className="flex gap-3 items-center p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl shadow-sm">
-                      <div className="flex-1">
-                        <input
-                          type="text"
-                          value={person.name}
-                          onChange={(e) => updateStaff(person.id, 'name', e.target.value)}
-                          placeholder={`Staff member ${index + 1}`}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none transition-all text-base"
-                        />
+          {hasValidData && (
+            <div className="card">
+              <h2 className="results-title">Distribution Results</h2>
+              
+              {distribution.map((person) => {
+                const hours = parseFloat(person.hours) || 0;
+                if (hours === 0) return null;
+                
+                return (
+                  <div key={person.id} className="result-item">
+                    <div>
+                      <div className="result-name">
+                        {person.name || `Staff member ${staff.findIndex(s => s.id === person.id) + 1}`}
                       </div>
-                      <div className="w-28">
-                        <input
-                          type="number"
-                          value={person.hours}
-                          onChange={(e) => updateStaff(person.id, 'hours', e.target.value)}
-                          placeholder="Hours"
-                          step="0.5"
-                          min="0"
-                          inputMode="decimal"
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none transition-all text-center font-semibold"
-                        />
+                      <div className="result-details">
+                        {person.hours} hours · {person.percentage}% of total
                       </div>
-                      <button
-                        onClick={() => removeStaff(person.id)}
-                        disabled={staff.length === 1}
-                        className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
                     </div>
-                  ))}
-                </div>
+                    <div className="result-amount">
+                      £{person.amount}
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="total-section">
+                <span className="total-label">Total Distributed</span>
+                <span className="total-amount">£{totalTips}</span>
               </div>
             </div>
+          )}
 
-            {/* Results */}
-            {hasValidData && (
-              <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Distribution Results</h2>
-                
-                <div className="space-y-3">
-                  {distribution.map((person) => {
-                    const hours = parseFloat(person.hours) || 0;
-                    if (hours === 0) return null;
-                    
-                    return (
-                      <div key={person.id} className="flex items-center justify-between p-5 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-2xl shadow-sm">
-                        <div className="flex-1">
-                          <div className="font-bold text-gray-900 text-lg">
-                            {person.name || `Staff member ${staff.findIndex(s => s.id === person.id) + 1}`}
-                          </div>
-                          <div className="text-sm text-gray-600 font-medium mt-1">
-                            {person.hours} hours • {person.percentage}% of total
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-purple-600">
-                            £{person.amount}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+          {!hasValidData && (
+            <div className="card empty-state">
+              <DollarSign className="empty-icon" />
+              <p className="empty-text">Enter total tips and staff hours to see the distribution</p>
+            </div>
+          )}
 
-                <div className="mt-8 pt-6 border-t-3 border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-gray-700">Total Distributed:</span>
-                    <span className="text-4xl font-bold text-gray-900">£{totalTips}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Empty State */}
-            {!hasValidData && (
-              <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
-                <div className="text-gray-300 mb-4">
-                  <DollarSign className="w-20 h-20 mx-auto" />
-                </div>
-                <p className="text-gray-500 text-lg">
-                  Enter total tips and staff hours to see the distribution
-                </p>
-              </div>
-            )}
+          <div className="footer">
+            Built by <a href="https://yourwebsite.com">Your Name</a> · <a href="https://yourtools.com">More Tools</a>
           </div>
         </div>
       );
@@ -231,7 +525,6 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script>
-    // Register service worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
